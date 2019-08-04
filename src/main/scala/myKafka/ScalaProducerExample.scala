@@ -6,7 +6,7 @@ import kafka.producer.{KeyedMessage, Producer, ProducerConfig}
 
 object ScalaProducerExample extends  App{
   val topic = "test"
-  val brokers = "192.168.11.30:9092"
+  val brokers = "192.168.2.34:9092"
   val props = new Properties()
   props.put("metadata.broker.list", brokers)
   props.put("serializer.class", "kafka.serializer.StringEncoder")
@@ -15,9 +15,11 @@ object ScalaProducerExample extends  App{
   val config = new ProducerConfig(props)
   val producer = new Producer[String, String](config)
   val t = System.currentTimeMillis()
-  val msg = "hello, I'm test message!"
-  val record = new KeyedMessage[String, String](topic, "key", msg)
-  producer.send(record)
+  for (i <- 1 to 3) {
+    val msg = s"hello, I'm the $i message!"
+    val record = new KeyedMessage[String, String](topic, "key", msg)
+    producer.send(record)
+  }
   producer.close()
 
 }
