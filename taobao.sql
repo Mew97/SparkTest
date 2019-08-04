@@ -1,4 +1,4 @@
-./neo4j-import --into /home/wkq/neo4j/neo4j-community-3.1.0/data/databases/test_10000000_graph.db --nodes /home/wkq/neo4j/node.csv  --relationships /home/wkq/neo4j/relathionship.csv --trim-strings true --input-encoding UTF-8 --id-type INTEGER --stacktrace true --bad-tolerance 0 --skip-bad-relationships true --skip-duplicate-nodes false
+./neo4j-import --into /home/wkq/neo4j/neo4j-community-3.1.0/data/databases/test_10000000_graph.db  --nodes /home/wkq/neo4j/node.csv  --relationships /home/wkq/neo4j/relathionship.csv --trim-strings true --input-encoding UTF-8 --id-type INTEGER --stacktrace true --bad-tolerance 0 --skip-bad-relationships true --skip-duplicate-nodes false
 
 
 create external table aggregate(
@@ -62,7 +62,7 @@ time string
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 location "/taobao/";
 
-create table userB stored as parquet as select * from userBehavior;
+create table userc stored as parquet as select * from userBehavior;
 
 spark-submit \
 --class SimpleApp \

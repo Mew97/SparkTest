@@ -29,7 +29,7 @@ object TaoBao {
     val spark = new SparkContext(conf)
     val sqlContext = new HiveContext(spark)
     sqlContext.setConf("spark.sql.dialect","hiveql")
-    sqlContext.read.parquet("hdfs://cdh1:8020/user/hive/warehouse/taobao.db/userb")
+    sqlContext.read.parquet("hdfs://master:8020/user/hive/warehouse/taobao.db/userb")
       .registerTempTable("userB")
     val df = sqlContext.sql("select shop_id, count(*) count from userB group by shop_id order by count desc limit 3")
       .cache()
