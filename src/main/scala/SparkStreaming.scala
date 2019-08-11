@@ -8,7 +8,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object SparkStreaming {
   def main(args: Array[String]): Unit = {
-    test2()
+    test1()
   }
   def test1(): Unit ={
     val conf = new SparkConf().setAppName("SparkStreamingWordCount").setMaster("local[2]")
