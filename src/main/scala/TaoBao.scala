@@ -12,7 +12,7 @@ object TaoBao {
     val conf = new SparkConf().setAppName("mySpark")
     val spark = new SparkContext(conf)
     val sqlContext = new HiveContext(spark)
-    val df = sqlContext.read.parquet("hdfs://CDH1:8020/user/hive/warehouse/taobao.db/userb")
+    val df = sqlContext.read.parquet("hdfs://master:8020/user/hive/warehouse/taobao.db/userb")
     sqlContext.setConf("spark.sql.dialect","hiveql")
     import org.apache.spark.sql.functions._
 

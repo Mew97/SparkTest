@@ -5,8 +5,8 @@ import java.util.Properties
 import kafka.producer.{KeyedMessage, Producer, ProducerConfig}
 
 object ScalaProducerExample extends  App{
-  val topic = "test"
-  val brokers = "192.168.2.34:9092"
+  val topic = "data01"
+  val brokers = "cdh1:9092"
   val props = new Properties()
   props.put("metadata.broker.list", brokers)
   props.put("serializer.class", "kafka.serializer.StringEncoder")

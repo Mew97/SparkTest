@@ -22,7 +22,7 @@ public class HelloWorld implements AutoCloseable {
                 @Override
                 public Record execute(Transaction tx) {
                     StatementResult result = tx.run(
-                            "match p = shortestpath((n)-[*..30]->(m)) " +
+                            "match p = shortestpath((n)-[*]->(m)) " +
                                     "where n.name=$start and m.name=$end " +
                                     "return p",
                             parameters("start", start,"end", end));

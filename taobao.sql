@@ -62,7 +62,7 @@ time string
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
 location "/taobao/";
 
-create table userc stored as parquet as select * from userBehavior;
+create table userb stored as parquet as select * from userBehavior;
 
 spark-submit \
 --class SimpleApp \

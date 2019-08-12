@@ -11,28 +11,50 @@ object SparkStreaming {
     test2()
   }
   def test1(): Unit ={
-    val conf = new SparkConf().setAppName("SparkStreamingWordCount").setMaster("local[2]")
+    val conf = new SparkConf().setAppName("SparkStreamingWordCount")
     val ssc = new StreamingContext(conf, Seconds(5))
-    val topics = Map("test" -> 1)
-    val lines = KafkaUtils.createStream(ssc,"192.168.2.31:2181","test-1",topics).map(_._2)
+    val topics = Map("test1" -> 1)
+    val lines = KafkaUtils.createStream(ssc,"cdh1:2181","test-1",topics).map(_._2)
     lines.print()
     lines.flatMap(_.split(" ")).map((_,1)).reduceByKey(_+_).print()
     ssc.start()
     ssc.awaitTermination()
   }
   def test2(): Unit ={
-    val conf = new SparkConf().setAppName("SparkStreamingWordCount").setMaster("local[2]")
-    val ssc = new StreamingContext(conf, Seconds(5))
-    val topicsSet = "test".split(",").toSet
-    val kafkaParams = scala.collection.immutable.Map[String, String]("metadata.broker.list" -> "192.168.2.34:9092", "auto.offset.reset" -> "smallest", "group.id" -> "test-1")
+    val conf = new SparkConf().setAppName("SparkStreamingWordCount")
+    val ssc = new StreamingContext(conf, Seconds(3))
+    ssc.checkpoint("hdfs://cdh1:8020/checkpoint")
+//    val topicsSet = "test1".split(",").toSet
+    val kafkaParams = scala.collection.immutable.Map[String, String]("metadata.broker.list" -> "cdh1:9092,cdh3:9092,cdh4:9092,cdh5:9092", "group.id" -> "test-2")
 
     val messageHandler = (mmd: MessageAndMetadata[String, String]) => (mmd.key, mmd.message)
-    val topicAndPartiton = TopicAndPartition("test", 0)
-    val lastStopOffset = Map(topicAndPartiton->0L)
+    //val topicAndPartiton = TopicAndPartition("test3", 1)
+    val lastStopOffset = Map(TopicAndPartition("data01", 0)->0L)
 
     val directKafkaStream = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder, (String, String)](ssc, kafkaParams, lastStopOffset, messageHandler)
 
     var offsetRanges = Array[OffsetRange]()
+
+
+
+//    def updateFun(newValue: Seq[Int],runningCount: Option[Int]) = {
+//      val i = runningCount.getOrElse(0)
+//      val j = newValue.sum
+//      Some(i + j)
+//    }
+//    directKafkaStream.map(_._2).flatMap(_.split(" ")).map((_,1)).updateStateByKey(updateFun)
+//        .foreachRDD(rdd=>{
+//          val host = "cdh4"
+//          val port = 6379
+//          val timeout = 10000
+//          val jedisPool = new JedisPool(new GenericObjectPoolConfig, host, port, timeout)
+//          val jedis = jedisPool.getResource
+//          rdd.collect.foreach(x=>jedis.set("zb:"+x._1,x._2.toString))
+//          jedis.close()
+//        })
+
+    //val DS = directKafkaStream.window(Seconds(30),Seconds(6))
+
     directKafkaStream.transform { rdd =>
       offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
       rdd
@@ -40,7 +62,9 @@ object SparkStreaming {
       for (o <- offsetRanges) {
         println(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
       }
-      rdd.map(_._2).flatMap(_.split(" ")).map((_,1)).reduceByKey(_+_).foreach(println)
+      rdd.foreach(println)
+//      val tuples = rdd.flatMap(_._2.split(" ")).map((_,1)).reduceByKey(_+_).collect()
+//      println(tuples.mkString(""))
     }
     ssc.start()
     ssc.awaitTermination()

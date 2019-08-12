@@ -41,8 +41,10 @@ object Pregel_SSSP {
           Iterator.empty
         }
       },
+
       //Merge Message
       (a, b) => if (a._1 < b._1) a else b)
+
     //println(sssp.vertices.collect.mkString("\n"))
     val rs = sssp.vertices.filter(x=>x._1==1202).first()._2._2
 
