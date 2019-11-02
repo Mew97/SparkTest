@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <properties>
-        <spark.version>2.1.0</spark.version>
+        <spark.version>2.4.4</spark.version>
         <scala.version>2.11</scala.version>
         <scope.model>compile</scope.model>
         <scope.compile>compile</scope.compile>
